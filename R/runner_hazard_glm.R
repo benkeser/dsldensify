@@ -262,7 +262,8 @@ make_glm_hazard_runner <- function(
     if(length(unique(qs)) < (k-1)) {
       # Edge case where requesting more knots in spline than possible with unique bins. Skip compute_spline_specs
       unique_bins <- unique(train_set$bin_id)
-      f <- stats::as.formula(paste0("in_bin ~ -1 + ", paste0(lapply(unique_bins, function(x) paste0("I(bin_id == ", x, ")")), collapse = "+" ))) 
+      rhs <- paste0("-1 + ", paste0(lapply(unique_bins, function(x) paste0("I(bin_id == ", x, ")")), collapse = "+" ))
+      f <- stats::as.formula(paste0("in_bin ~ ", rhs)) 
       
       specs <- NULL
       skip_bin_spline <- TRUE
@@ -290,6 +291,7 @@ make_glm_hazard_runner <- function(
   }
 
   build_design_new <- function(design_spec, newdata) {
+
     f <- stats::as.formula(paste0("~ ", design_spec$rhs))
 
     # run for most cases, only skips when edge case single bin_id in training fold
