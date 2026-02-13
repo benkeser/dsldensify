@@ -260,6 +260,7 @@ make_glm_hazard_runner <- function(
     qs <- quantile(train_set$bin_id, probs = probs)
     
     if(length(unique(qs)) < (k-1)) {
+      warning("More spline knots requested in glm_hazard_runner than are possible given bin distribution. Using indicator functions for bins instead.")
       # Edge case where requesting more knots in spline than possible with unique bins. Skip compute_spline_specs
       unique_bins <- unique(train_set$bin_id)
       rhs <- paste0("-1 + ", paste0(lapply(unique_bins, function(x) paste0("I(bin_id == ", x, ")")), collapse = "+" ))
