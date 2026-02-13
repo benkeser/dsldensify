@@ -255,10 +255,14 @@ make_glm_hazard_runner <- function(
   build_design_train <- function(rhs_raw, train_set) {
     rhs <- normalize_rhs(rhs_raw)
     
-    if(length(unique(train_set$bin_id)) == 1){
-      # Edge case where bin_id is constant. Skip compute_spline_specs
-      level_of_constant_bin_id <- train_set$bin_id[1]
-      f <- stats::as.formula(paste0("in_bin ~ -1 + I(bin_id == ", level_of_constant_bin_id, ")"))
+    k <- get_spline_df(rhs_raw)
+    probs <- seq_len(k - 1) / k
+    qs <- quantile(train_set$bin_id, probs = probs)
+    
+    if(length(unique(qs)) < (k-1)) {
+      # Edge case where requesting more knots in spline than possible with unique bins. Skip compute_spline_specs
+      unique_bins <- unique(train_set$bin_id)
+      f <- stats::as.formula(paste0("in_bin ~ -1 + ", paste0(lapply(unique_bins, function(x) paste0("I(bin_id == ", x, ")")), collapse = "+" ))) 
       
       specs <- NULL
       skip_bin_spline <- TRUE
@@ -414,6 +418,41 @@ make_glm_hazard_runner <- function(
 
     out
   }
+  
+  # helper to get degrees of freedom for spline from formula
+  get_spline_df <- function(rhs_raw) {
+    rhs <- normalize_rhs(rhs_raw)
+    f <- stats::as.formula(paste0("~", rhs))
+    
+    # Find ns() call
+    ns_call <- NULL
+    
+    for (term in attr(stats::terms(f), "term.labels")) {
+      expr <- str2lang(term)
+      if (is.call(expr) && grepl("^ns$", as.character(expr[[1]]))) {
+        ns_call <- expr
+        break
+      }
+    }
+    
+    if (is.null(ns_call)) {
+      stop("No ns() term found in rhs")
+    }
+    
+    # Extract df argument
+    df_val <- NULL
+    
+    # Look for named argument df=
+    arg_names <- names(ns_call)
+    if ("df" %in% arg_names) {
+      df_val <- eval(ns_call[["df"]])
+    } else {
+      stop("ns() call does not contain df argument")
+    }
+    
+    as.integer(df_val)
+  }
+  
 
   # --- runner --------------------------------------------------------------
 
