@@ -88,6 +88,8 @@
 #' )
 #'
 #' @export
+#' @importFrom ranger predict.ranger
+
 make_rf_hurdle_runner <- function(
   rhs_list,
   mtry_grid = NULL,
@@ -198,7 +200,7 @@ make_rf_hurdle_runner <- function(
       cols <- fits[[k]]$cols
       df_new <- as.data.frame(nd[, cols, with = FALSE])
 
-      pr <- predict(
+      pr <- ranger:::predict.ranger(
         fits[[k]]$model,
         data = df_new,
         type = "response",
