@@ -5,7 +5,7 @@
 
 > **Discrete Super Learner Conditional Density Estimation**
 
-**Author:**  
+**Author:**\
 David Benkeser (Emory University)
 
 ------------------------------------------------------------------------
@@ -18,11 +18,11 @@ Super Learner–style model selection framework**.
 
 The package is designed for settings where:
 
--   the full conditional distribution of $A \mid W$ is required (not
-    just a mean),
--   flexible machine-learning estimators are desired,
--   and model selection is performed by **cross-validated negative
-    log-density risk**.
+- the full conditional distribution of $A \mid W$ is required (not just
+  a mean),
+- flexible machine-learning estimators are desired,
+- and model selection is performed by **cross-validated negative
+  log-density risk**.
 
 The project is under active development and should currently be viewed
 as **research-grade software** rather than a fully stable production
@@ -41,12 +41,11 @@ cross-validation interface.
 In this approach, the support of $A$ is discretized into bins, and the
 conditional density is estimated by modeling **discrete-time hazards**:
 
--   $A$ is binned using either equal-range or equal-mass binning.
--   Long-format data are constructed with one row per observation–bin
-    pair.
--   Binary regression models estimate the hazard of falling into each
-    bin.
--   Estimated hazards are converted into a continuous density.
+- $A$ is binned using either equal-range or equal-mass binning.
+- Long-format data are constructed with one row per observation–bin
+  pair.
+- Binary regression models estimate the hazard of falling into each bin.
+- Estimated hazards are converted into a continuous density.
 
 This strategy allows the use of a wide range of binary learners (e.g.,
 logistic regression, penalized GLMs, random forests, gradient boosting).
@@ -57,10 +56,9 @@ Direct models estimate $f(A \mid W)$ without discretization by
 specifying a parametric or semi-parametric likelihood for the outcome,
 for example:
 
--   homoskedastic Gaussian regression,
--   flexible GAMLSS models with covariate-dependent parameters,
--   mixture-of-experts models with component-specific means and
-    variances.
+- homoscedastic Gaussian regression,
+- flexible GAMLSS models with covariate-dependent parameters,
+- mixture-of-experts models with component-specific means and variances.
 
 ### 3. Quantile inversion methods
 
@@ -71,15 +69,16 @@ $W$.
 
 In this approach:
 
--   Conditional quantile functions $Q(p \mid W)$ are estimated on a
-    fixed grid of probability levels $p \in (p_{\min}, p_{\max})$ using
-    quantile regression.
--   The conditional density is recovered via inversion of the quantile
-    function, using the identity
-    $f(a \mid W) = \left( \frac{d}{dp} Q(p \mid W) \right)^{-1}  \Bigg|_{p : Q(p \mid W) = a}.$
--   Numerical differentiation and smoothing are used to stabilize
-    estimates of the derivative $dQ(p \mid W)/dp$, and monotonicity of
-    the quantile function.
+- Conditional quantile functions $Q(p \mid W)$ are estimated on a fixed
+  grid of probability levels $p \in (p_{\min}, p_{\max})$ using quantile
+  regression.
+- The conditional density is recovered via inversion of the quantile
+  function, using the identity
+  $f(a \mid W) = \left( \frac{d}{dp} Q(p \mid W) \right)^{-1}
+    \Bigg|_{p : Q(p \mid W) = a}.$
+- Numerical differentiation and smoothing are used to stabilize
+  estimates of the derivative $dQ(p \mid W)/dp$, and monotonicity of the
+  quantile function.
 
 For the time being, only parametric quantile regression is supported.
 
@@ -90,7 +89,7 @@ For the time being, only parametric quantile regression is supported.
 Hurdle models combine a point-mass learner for
 $\pi(W) = P(A = 0 \mid W)$ with a positive-part density for $A > 0$. The
 conditional distribution of $A$ is modeled as a two-part mixture:
-$f(a \mid W = w) = \pi(w)\,\mathbb{I}\{a = a_0\} + \left\{1 - \pi(w)\right\} f_+(a \mid w)\,\mathbb{I}\{a \ne a_0\} \ .$
+$f(a \mid W = w) =   \pi(w)\,\mathbb{I}\{a = a_0\} +   \left( 1 - \pi(w)\right) f_+(a \mid w)\,\mathbb{I}\{a \ne a_0\} \ .$
 
 If hurdle learners are specified for $\pi$, the function then uses the
 supplied direct and/or hazard learners for the positive-part density
@@ -113,8 +112,8 @@ remotes::install_github("benkeser/dsldensify")
 
 Below is a simple example using synthetic data. We combine:
 
--   a hazard-based learner using gradient boosting, and
--   a direct Gaussian conditional density model.
+- a hazard-based learner using gradient boosting, and
+- a direct Gaussian conditional density model.
 
 A simple example illustrates how `haldensify` may be used to train a
 discrete super learner on a small data set. In this example, we leverage
@@ -201,7 +200,7 @@ W_grid <- data.table(
 plot(fit, W_grid, mode = "conditional")
 ```
 
-<img src="README-example-plot1-1.png" width="80%" />
+<img src="README-example-plot1-1.png" alt="" width="80%" />
 
 We can also sanity check the fit by comparing the marginal density
 estimate implied by the conditional model to a simple histogram.
@@ -214,7 +213,7 @@ hist(
 plot(fit, W_grid, mode = "marginal", add = TRUE, plot_args = list(lwd = 2))
 ```
 
-<img src="README-example-plot2-1.png" width="80%" />
+<img src="README-example-plot2-1.png" alt="" width="80%" />
 
 ------------------------------------------------------------------------
 
@@ -270,7 +269,7 @@ plot(
 )
 ```
 
-<img src="README-example-sample-1.png" width="80%" />
+<img src="README-example-sample-1.png" alt="" width="80%" />
 
 Cross-validated sampling is also supported; see the function
 documentation for details.
@@ -302,7 +301,7 @@ hurdle_learners <- list(
 )
 
 positive_learners <- list(
-  lognormal = make_lognormal_homosked_pos_runner(
+  lognormal = make_lognormal_homosced_pos_runner(
     rhs_list = list(~ x1 + x2)
   )
 )
@@ -339,7 +338,7 @@ plot(
 )
 ```
 
-<img src="README-example-hurdle-plot-1.png" width="100%" />
+<img src="README-example-hurdle-plot-1.png" alt="" width="100%" />
 
 ------------------------------------------------------------------------
 
@@ -362,22 +361,22 @@ allows for building out additional learners under this same framework.
 
 ### Direct density learners
 
-| Learner                                               | Runner function                          |
-|-------------------------------------------------------|------------------------------------------|
-| Gaussian linear model, homoskedastic                  | `make_gaussian_homosced_direct_runner()` |
-| GAMLSS (`gamlss`)                                     | `make_gamlss_direct_runner()`            |
-| Bounded GAMLSS (`gamlss`)                             | `make_bounded_gamlss_direct_runner()`    |
-| Gaussian mixture of experts (EM, optional gating)     | `make_gmm_direct_runner()`               |
-| Location–scale model with residual KDE                | `make_locscale_kde_direct_runner()`      |
-| Mixture of location–scale residual KDE experts        | `make_mix_locscale_kde_direct_runner()`  |
-| Quantile-function–based density (quantile regression) | `make_quantreg_direct_runner()`          |
+| Learner | Runner function |
+|----|----|
+| Gaussian linear model, homoscedastic | `make_gaussian_homosced_direct_runner()` |
+| GAMLSS (`gamlss`) | `make_gamlss_direct_runner()` |
+| Bounded GAMLSS (`gamlss`) | `make_bounded_gamlss_direct_runner()` |
+| Gaussian mixture of experts (EM, optional gating) | `make_gmm_direct_runner()` |
+| Location–scale model with residual KDE | `make_locscale_kde_direct_runner()` |
+| Mixture of location–scale residual KDE experts | `make_mix_locscale_kde_direct_runner()` |
+| Quantile-function–based density (quantile regression) | `make_quantreg_direct_runner()` |
 
 ### Positive-part learners
 
-| Learner                               | Runner function                        |
-|---------------------------------------|----------------------------------------|
-| Gamma GLM with log link               | `make_gamma_glm_log_pos_runner()`      |
-| Log-normal homoskedastic direct model | `make_lognormal_homosked_pos_runner()` |
+| Learner | Runner function |
+|----|----|
+| Gamma GLM with log link | `make_gamma_glm_log_pos_runner()` |
+| Log-normal homoscedastic direct model | `make_lognormal_homosced_pos_runner()` |
 
 ### Hurdle learners
 
@@ -398,9 +397,9 @@ Unit tests are minimal for the time being.
 
 Despite this, the package already supports:
 
--   multiple learner backends,
--   multiple binning strategies,
--   attempts at memory-efficient cross-validation,
+- multiple learner backends,
+- multiple binning strategies,
+- attempts at memory-efficient cross-validation,
 
 A package vignette is (probably) coming soon.
 
@@ -425,8 +424,8 @@ prior to submitting a pull request.
 
 ## Related
 
--   [R/`haldensify`](https://github.com/nhejazi/haldensify) – Earlier
-    work that inspired parts of the hazard-based density machinery.
+- [R/`haldensify`](https://github.com/nhejazi/haldensify) – Earlier work
+  that inspired parts of the hazard-based density machinery.
 
 ------------------------------------------------------------------------
 

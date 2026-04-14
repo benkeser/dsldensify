@@ -66,7 +66,7 @@ logistic regression, penalized GLMs, random forests, gradient boosting).
 Direct models estimate \(f(A \mid W)\) without discretization by specifying
 a parametric or semi-parametric likelihood for the outcome, for example:
 
-- homoskedastic Gaussian regression,
+- homoscedastic Gaussian regression,
 - flexible GAMLSS models with covariate-dependent parameters,
 - mixture-of-experts models with component-specific means and variances.
 
@@ -93,7 +93,7 @@ For the time being, only parametric quantile regression is supported.
 
 Hurdle models combine a point-mass learner for \(\pi(W) = P(A = 0 \mid W)\) with a positive-part density for \(A > 0\). The conditional distribution of $A$ is modeled as a two-part mixture:
 \(
-f(a \mid W = w) =   \pi(w)\,\mathbb{I}\{a = a_0\} +   \left\{1 - \pi(w)\right\} f_+(a \mid w)\,\mathbb{I}\{a \ne a_0\} \ .
+f(a \mid W = w) =   \pi(w)\,\mathbb{I}\{a = a_0\} +   \left( 1 - \pi(w)\right) f_+(a \mid w)\,\mathbb{I}\{a \ne a_0\} \ .
 \)
 
 If hurdle learners are specified for $\pi$, the function then uses the supplied direct and/or hazard learners for the positive-part density estimation. Direct density learners inputted in this way should respect the requirement for positive bounds.
@@ -268,7 +268,7 @@ hurdle_learners <- list(
 )
 
 positive_learners <- list(
-  lognormal = make_lognormal_homosked_pos_runner(
+  lognormal = make_lognormal_homosced_pos_runner(
     rhs_list = list(~ x1 + x2)
   )
 )
@@ -324,7 +324,7 @@ All estimators in `dsldensify` are implemented as **runners**: adapters that exp
 
 | Learner                                                  | Runner function                          |
 | -------------------------------------------------------- | ---------------------------------------- |
-| Gaussian linear model, homoskedastic                     | `make_gaussian_homosced_direct_runner()` |
+| Gaussian linear model, homoscedastic                     | `make_gaussian_homosced_direct_runner()` |
 | GAMLSS (`gamlss`)                                        | `make_gamlss_direct_runner()`            |
 | Bounded GAMLSS (`gamlss`)                                | `make_bounded_gamlss_direct_runner()`    |
 | Gaussian mixture of experts (EM, optional gating)        | `make_gmm_direct_runner()`               |
@@ -337,7 +337,7 @@ All estimators in `dsldensify` are implemented as **runners**: adapters that exp
 | Learner                                       | Runner function                        |
 | --------------------------------------------- | -------------------------------------- |
 | Gamma GLM with log link                       | `make_gamma_glm_log_pos_runner()`      |
-| Log-normal homoskedastic direct model         | `make_lognormal_homosked_pos_runner()` |
+| Log-normal homoscedastic direct model         | `make_lognormal_homosced_pos_runner()` |
 
 ### Hurdle learners
 
