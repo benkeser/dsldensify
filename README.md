@@ -89,7 +89,7 @@ For the time being, only parametric quantile regression is supported.
 Hurdle models combine a point-mass learner for
 $\pi(W) = P(A = 0 \mid W)$ with a positive-part density for $A > 0$. The
 conditional distribution of $A$ is modeled as a two-part mixture:
-$f(a \mid W = w) =   \pi(w)\,\mathbb{I}\{a = a_0\} +   \left( 1 - \pi(w)\right) f_+(a \mid w)\,\mathbb{I}\{a \ne a_0\} \ .$
+$f(a \mid W = w) =   \pi(w)\,\mathbb{I}(a = a_0) +   \left( 1 - \pi(w)\right) f_+(a \mid w)\,\mathbb{I}(a \ne a_0) \ .$
 
 If hurdle learners are specified for $\pi$, the function then uses the
 supplied direct and/or hazard learners for the positive-part density
