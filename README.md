@@ -115,7 +115,7 @@ Below is a simple example using synthetic data. We combine:
 - a hazard-based learner using gradient boosting, and
 - a direct Gaussian conditional density model.
 
-A simple example illustrates how `haldensify` may be used to train a
+A simple example illustrates how `dsldensify` may be used to train a
 discrete super learner on a small data set. In this example, we leverage
 a hazard-based density learner that uses `xgboost` and a simple, direct
 density estimate based on a homoscedastic, Gaussian linear model.
